@@ -4,9 +4,24 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
+
+func commandRunner(commandParts []string) {
+	cmd := exec.Command(commandParts[0], commandParts[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if err != nil {
+		if _, ok := err.(*exec.Error); ok {
+			fmt.Printf("%s: command not found\n", commandParts[0])
+		} else {
+			fmt.Println(err.Error())
+		}
+	}
+}
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
@@ -21,6 +36,7 @@ func main() {
 		}
 
 		commandInput = strings.TrimSpace(commandInput)
+		commandParts := strings.Split(commandInput, " ")
 
 		switch {
 		case commandInput == "exit 0":
@@ -38,18 +54,19 @@ func main() {
 				found := false
 				for _, path := range strings.Split(os.Getenv("PATH"), string(os.PathListSeparator)) {
 					_, err := os.Stat(filepath.Join(path, commandType))
-					if err == nil {
-						fmt.Printf("%s is %s\n", commandType, filepath.Join(path, commandType))
-						found = true
-						break
+					if _, ok := err.(*os.PathError); ok {
+						continue
 					}
+					fmt.Printf("%s is %s\n", commandType, filepath.Join(path, commandType))
+					found = true
+					break
 				}
 				if !found {
 					fmt.Printf("%s not found\n", commandType)
 				}
 			}
 		default:
-			fmt.Printf("%s: command not found\n", commandInput)
+			commandRunner(commandParts)
 		}
 	}
 }
