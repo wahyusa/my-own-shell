@@ -21,11 +21,15 @@ func main() {
 
 		commandInput = strings.TrimSpace(commandInput)
 
-		if commandInput == "exit 0" {
-			break
+		switch {
+		case commandInput == "exit 0":
+			return
+		case commandInput == "echo":
+			fmt.Println()
+		case strings.HasPrefix(commandInput, "echo "):
+			fmt.Println(strings.TrimPrefix(commandInput, "echo "))
+		default:
+			fmt.Printf("%s: command not found\n", commandInput)
 		}
-
-		// If the command is not "exit 0", print "command not found"
-		fmt.Printf("%s: command not found\n", commandInput)
 	}
 }
