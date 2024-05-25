@@ -28,6 +28,14 @@ func main() {
 			fmt.Println()
 		case strings.HasPrefix(commandInput, "echo "):
 			fmt.Println(strings.TrimPrefix(commandInput, "echo "))
+		case strings.HasPrefix(commandInput, "type "):
+			commandType := strings.TrimPrefix(commandInput, "type ")
+			switch commandType {
+			case "echo", "exit", "type":
+				fmt.Printf("%s is a shell builtin\n", commandType)
+			default:
+				fmt.Printf("%s not found\n", commandType)
+			}
 		default:
 			fmt.Printf("%s: command not found\n", commandInput)
 		}
