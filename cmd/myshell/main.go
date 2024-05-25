@@ -21,12 +21,11 @@ func main() {
 
 		commandInput = strings.TrimSpace(commandInput)
 
-		if commandInput == "exit" {
+		if commandInput == "exit 0" {
 			break
 		}
 
-		// Here you can add code to evaluate the commandInput
-		// For now, we just print "command not found"
+		// If the command is not "exit 0", print "command not found"
 		fmt.Printf("%s: command not found\n", commandInput)
 	}
 }
